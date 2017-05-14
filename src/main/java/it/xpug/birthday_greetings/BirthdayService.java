@@ -35,13 +35,5 @@ public class BirthdayService {
 		MessageService messageService = new MessageService(smtpHost, smtpPort);
 		messageService.composeMessage(sender, subject, body, recipient);
 		messageService.sendMessage();
-//		Message msg = new MimeMessage(messageService.getSessions());
-//		msg.setFrom(new InternetAddress(sender));
-//		msg.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-//		msg.setSubject(subject);
-//		msg.setText(body);
-
-		// Send the message
-//		Transport.send(msg);
 	}
 }
