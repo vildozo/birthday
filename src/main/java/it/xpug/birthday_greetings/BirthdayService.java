@@ -1,9 +1,11 @@
 package it.xpug.birthday_greetings;
 
+import java.awt.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -15,25 +17,29 @@ import javax.mail.internet.MimeMessage;
 
 public class BirthdayService {
 
+	private EmployeeRepository repository;
+	private MessageService messageService;
+	
+	
+	public void repository_starter(XDate today, String fileName)throws IOException, ParseException, AddressException, MessagingException {
+		repository= new EmployeeRepository(today,fileName);
+	}
+	
 	public void sendGreetings(String fileName, XDate xDate, String smtpHost, int smtpPort) throws IOException, ParseException, AddressException, MessagingException {
+		EmployeeRepository employeeRespository = new EmployeeRepository(xDate, fileName);
+		employeeRespository.sendEmailForBirthday(xDate, smtpHost, smtpPort);
+	}
+	
+	public void loadEmployeeList(XDate today, String fileName)throws IOException, ParseException, AddressException, MessagingException{
+		ArrayList<Employee> employees = new ArrayList<Employee>();
 		BufferedReader in = new BufferedReader(new FileReader(fileName));
 		String str = "";
 		str = in.readLine(); // skip header
 		while ((str = in.readLine()) != null) {
 			String[] employeeData = str.split(", ");
-			Employee employee = new Employee(employeeData[1], employeeData[0], employeeData[2], employeeData[3]);
-			if (employee.isBirthday(xDate)) {
-				String recipient = employee.getEmail();
-				String body = "Happy Birthday, dear %NAME%".replace("%NAME%", employee.getFirstName());
-				String subject = "Happy Birthday!";
-				sendMessage(smtpHost, smtpPort, "sender@here.com", subject, body, recipient);
-			}
+			employees.add(new Employee(employeeData[1], employeeData[0], employeeData[2], employeeData[3]));
 		}
 	}
-
-	private void sendMessage(String smtpHost, int smtpPort, String sender, String subject, String body, String recipient) throws AddressException, MessagingException {
-		MessageService messageService = new MessageService(smtpHost, smtpPort);
-		messageService.composeMessage(sender, subject, body, recipient);
-		messageService.sendMessage();
-	}
+	
+	
 }

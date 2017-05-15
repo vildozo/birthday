@@ -19,9 +19,6 @@ public class MessageService {
 		this.session = Session.getInstance(props, null);
 	}
 	
-	public Session getSessions(){
-		return session;
-	}
 	
 	public void composeMessage(String sender, String subject, String body, String recipient) throws AddressException, MessagingException {
 		this.msg = new MimeMessage(this.session);
